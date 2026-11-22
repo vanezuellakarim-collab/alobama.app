@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AloBaMa — Con cháu</title>
+<meta name="theme-color" content="#0F766E">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="appmode">
+
+<header class="app-top">
+  <div class="app-brand">📞 AloBaMa <span class="chip" id="famChip">Gia đình…</span></div>
+  <span class="live" id="syncLive"><span class="dot2"></span><span id="syncTxt">Đang kết nối…</span></span>
+  <div style="margin-left:auto;display:flex;gap:8px">
+    <button class="mini-btn plain" id="btnSwitch" title="Xem bên ông/bà">🔄</button>
+    <button class="mini-btn plain" id="btnLogout" title="Đăng xuất">⏏</button>
+  </div>
+</header>
+
+<main class="app-body" id="appBody">
+  <div class="fam-wrap">
+
+    <div class="fam-card fam-head">
+      <div class="fam-ava">👵</div>
+      <div>
+        <div class="fam-name" id="famName">—</div>
+        <div class="fam-meta">Tài khoản Ông/Bà gắn với bạn · <span id="famPlan"></span></div>
+        <span class="pill idle" id="famStatus">Đang tải…</span>
+      </div>
+    </div>
+
+    <div id="famBanner" class="sos-banner" hidden>
+      🚨 <b>CẢNH BÁO KHẨN CẤP!</b> <span id="famBannerWho"></span> vừa bấm nút khẩn cấp<span id="famBannerTime"></span>
+      <div class="row">
+        <button id="btnBannerCall" type="button">📞 Gọi ngay</button>
+        <button id="btnBannerSafe" type="button">✅ Đã xử lý</button>
+      </div>
+    </div>
+
+    <div class="qa-grid">
+      <button class="qa c1" id="qaLoc" type="button"><span class="em">📍</span>Vị trí</button>
+      <button class="qa c2" id="qaNote" type="button"><span class="em">💌</span>Ghi chú</button>
+      <button class="qa c3" id="qaCall" type="button"><span class="em">📞</span>Gọi bà</button>
+      <button class="qa c4" id="qaRem" type="button"><span class="em">⏰</span>Nhắc lịch</button>
+    </div>
+
+    <h4>🔔 Thông báo mới</h4>
+    <div class="fam-card" id="famEvents" style="padding:8px 16px"></div>
+
+    <h4>💬 Tin nhắn với bà</h4>
+    <div class="fam-card">
+      <div id="famMsgList" class="msg-list" style="max-height:240px"></div>
+      <div class="chips" style="margin-top:10px">
+        <button class="chip-mini fam-chip" data-text="Con sẽ về cuối tuần này ạ 🏠">🏠 Về cuối tuần</button>
+        <button class="chip-mini fam-chip" data-text="Mẹ nhớ uống thuốc nhé 💊">💊 Nhắc thuốc</button>
+        <button class="chip-mini fam-chip" data-text="Con gọi mẹ ngay đây ạ 📞">📞 Gọi ngay</button>
+      </div>
+      <div class="msg-in">
+        <input id="famMsgTxt" placeholder="Nhắn cho bà..." maxlength="120">
+        <button id="btnFamSend" class="send-btn" type="button">Gửi</button>
+      </div>
+    </div>
+
+    <h4 id="secNotes">💌 Ghi chú cho bà <small style="color:var(--muted);font-weight:600">(hiện to trên máy bà)</small></h4>
+    <div class="fam-card">
+      <div id="famNotes"></div>
+      <textarea id="noteTxt" class="in" style="margin-top:10px" maxlength="120" placeholder="VD: Mẹ ơi trưa nay con gửi cháo cho mẹ, mẹ nhớ ăn nhé!"></textarea>
+      <div class="row-between">
+        <span class="count" id="noteCount">0/120 ký tự</span>
+        <button id="btnNoteSend" class="btn btn-primary sm" type="button">💌 Gửi tới bà</button>
+      </div>
+    </div>
+
+    <h4 id="secRems">⏰ Đặt lịch nhắc cho bà</h4>
+    <div class="fam-card">
+      <div id="famRems"></div>
+      <div class="rem-form">
+        <input id="remTitle" class="in" placeholder="Việc cần nhắc — VD: Uống thuốc huyết áp" maxlength="60">
+        <div class="rem-row">
+          <input id="remTime" class="in" type="time" value="07:00">
+          <select id="remRep" class="in">
+            <option value="daily">Hàng ngày</option>
+            <option value="once">Một lần</option>
+          </select>
+        </div>
+        <button id="btnRemAdd" class="btn btn-primary sm" type="button">＋ Thêm nhắc lịch</button>
+      </div>
+    </div>
+
+    <h4 id="secLoc">📍 Vị trí của bà</h4>
+    <div class="fam-card">
+      <div class="map">
+        <svg viewBox="0 0 400 190" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="190" fill="#EAF3EA"/>
+          <rect x="28" y="118" width="112" height="62" rx="8" fill="#CBE8CF"/>
+          <text x="52" y="153" font-size="11" fill="#4C7A57" font-weight="700">Công viên Tao Đàn</text>
+          <rect x="238" y="16" width="128" height="44" rx="6" fill="#DDE7F5"/>
+          <text x="262" y="42" font-size="11" fill="#4A6FA5" font-weight="700">Chợ Bến Thành</text>
+          <path d="M0 82 H400" stroke="#fff" stroke-width="17"/>
+          <path d="M0 82 H400" stroke="#F59E0B" stroke-width="2" stroke-dasharray="9 9" opacity=".55"/>
+          <path d="M172 0 V190" stroke="#fff" stroke-width="14"/>
+          <path d="M302 0 V190" stroke="#fff" stroke-width="9"/>
+          <rect x="20" y="18" width="58" height="38" rx="6" fill="#E2E8F0"/>
+          <rect x="96" y="24" width="48" height="34" rx="6" fill="#E2E8F0"/>
+          <rect x="200" y="102" width="66" height="50" rx="6" fill="#E2E8F0"/>
+          <rect x="322" y="110" width="58" height="56" rx="6" fill="#E2E8F0"/>
+        </svg>
+        <div class="pin" id="mapPin">📍</div>
+        <div class="map-label">Bà đang ở đây</div>
+      </div>
+      <div class="row-between" style="margin-top:12px">
+        <span class="loc-addr">🏠 Số 12 Nguyễn Thị Minh Khai, Q.1, TP.HCM <small style="color:#94A3B8">(mô phỏng)</small></span>
+        <button id="btnLocRefresh" class="chip-mini" type="button">↻ Làm mới</button>
+      </div>
+      <div class="loc-time" id="locTime">—</div>
+    </div>
+
+    <div class="tipbox">
+      <b>💡 Mẹo demo cho giám khảo:</b> mở trang này trên <b>2 thiết bị</b> (máy tính + điện thoại). Điện thoại đăng nhập tài khoản Ông/Bà
+      <button class="chip-mini" id="btnGpInfo" type="button">🔑 Xem mật khẩu Ông/Bà</button>
+      — bấm “Tôi ổn” trên một máy, máy còn lại sẽ nhận thông báo <b>ngay lập tức</b>. Hoặc bấm 🔄 trên thanh trên để đổi vai ngay trên máy này.
+    </div>
+
+    <div style="text-align:center;color:#94A3B8;font-size:11.5px;margin:18px 0 10px">🔧 Bản thử nghiệm MVP — vị trí, cuộc gọi mô phỏng · dữ liệu lưu tại server demo</div>
+  </div>
+</main>
+
+<!-- Modal: cuoc goi mo phong -->
+<div id="callModal" class="modal">
+  <div class="call-card">
+    <div class="avatar ring" id="callAva">👵</div>
+    <div class="call-name" id="callName"></div>
+    <div class="call-state" id="callState">Đang gọi...</div>
+    <div class="call-note">(Cuộc gọi mô phỏng trong bản demo)</div>
+    <button id="btnCallEnd" class="end-btn" type="button">📴 Kết thúc</button>
+  </div>
+</div>
+
+<!-- Modal: thong tin TK ong/ba -->
+<div id="gpInfoModal" class="modal">
+  <div class="call-card pick">
+    <h3>🔑 Tài khoản Ông/Bà</h3>
+    <div class="cred" style="margin-top:0">
+      <div class="cred-row"><span>Tên đăng nhập</span><b id="giU">—</b><button type="button" class="copy" data-copy="giU">Sao chép</button></div>
+      <div class="cred-row"><span>Mã PIN 4 số</span><b id="giP">—</b><button type="button" class="copy" data-copy="giP">Sao chép</button></div>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin:10px 0 4px">Dùng để đăng nhập trên điện thoại của ông bà.</p>
+    <button class="mclose js-mclose" type="button">Đóng</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status"></div>
+
+<script src="/js/common.js"></script>
+<script src="/js/conchau.js"></script>
+</body>
+</html>
